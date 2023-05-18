@@ -31,6 +31,8 @@ dependencies {
     // jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.1")
+
 
     implementation("org.freemarker:freemarker:2.3.32")
 }

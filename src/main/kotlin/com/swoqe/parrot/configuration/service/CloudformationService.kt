@@ -2,11 +2,13 @@ package com.swoqe.parrot.configuration.service
 
 import aws.sdk.kotlin.services.cloudformation.CloudFormationClient
 import aws.sdk.kotlin.services.cloudformation.model.*
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 object CloudformationService {
 
-    private val objectMapper = jacksonObjectMapper().writerWithDefaultPrettyPrinter()
+    private val objectMapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+        .writerWithDefaultPrettyPrinter()
 
     suspend fun deployStack(region: String, stackNameVal: String, template: String) {
         val request = CreateStackRequest {

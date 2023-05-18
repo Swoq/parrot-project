@@ -10,4 +10,6 @@ aws:
   region: "eu-west-1"
   ec2ImageId: "ami-09fd16644beea3565"
   services:
+#    - type: "AWS::ElasticLoadBalancingV2"
     - type: "ALB"
+
