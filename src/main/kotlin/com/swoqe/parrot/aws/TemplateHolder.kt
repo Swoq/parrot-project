@@ -1,22 +1,23 @@
 package com.swoqe.parrot.aws
 
-import java.io.FileNotFoundException
+import freemarker.cache.NullCacheStorage
+import freemarker.template.Configuration
+import java.io.StringWriter
 
 object TemplateHolder {
 
-    fun ec2Docker(
-        dockerImage: String, containerPort: String, ec2ImageId: String,
-        dbEndPoint: String, dbUser: String, dbPassword: String
-    ): String {
-        val template = javaClass.getResource("cf-templates/ec2.yaml")
-            ?.readText(Charsets.UTF_8)
-            ?: throw FileNotFoundException()
-
-        return template.replace("\${inner_port}", containerPort)
-            .replace("\${docker_image}", dockerImage)
-            .replace("\${db_endpoint}", dbEndPoint)
-            .replace("\${db_user}", dbUser)
-            .replace("\${db_password}", dbPassword)
-            .replace("\${ec2_image_id}", ec2ImageId)
+    private val freeMarker = Configuration(Configuration.VERSION_2_3_32).apply {
+        defaultEncoding = Charsets.UTF_8.name()
+        cacheStorage = NullCacheStorage.INSTANCE
+        setClassForTemplateLoading(javaClass, "/cf-templates/")
     }
+
+    fun ec2Docker(entity: Ec2Docker): String =
+        StringWriter().apply { freeMarker.getTemplate("ec2.yaml").process(entity, this) }.toString()
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        println(ec2Docker(Ec2Docker("my_image", "8080", "id000", "/rest", "user", "passs")))
+    }
+
 }
