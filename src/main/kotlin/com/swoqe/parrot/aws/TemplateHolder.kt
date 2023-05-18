@@ -15,9 +15,4 @@ object TemplateHolder {
     fun ec2Docker(entity: Ec2Docker): String =
         StringWriter().apply { freeMarker.getTemplate("ec2.yaml").process(entity, this) }.toString()
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        println(ec2Docker(Ec2Docker("my_image", "8080", "id000", "/rest", "user", "passs")))
-    }
-
 }

@@ -2,8 +2,11 @@ package com.swoqe.parrot.configuration.service
 
 import aws.sdk.kotlin.services.cloudformation.CloudFormationClient
 import aws.sdk.kotlin.services.cloudformation.model.*
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 object CloudformationService {
+
+    private val objectMapper = jacksonObjectMapper().writerWithDefaultPrettyPrinter()
 
     suspend fun deployStack(region: String, stackNameVal: String, template: String) {
         val request = CreateStackRequest {
@@ -31,7 +34,7 @@ object CloudformationService {
         CloudFormationClient { this.region = region }.use { cfClient ->
             val stacksResponse: DescribeStacksResponse = cfClient.describeStacks(DescribeStacksRequest {})
             stacksResponse.stacks?.forEach { stack ->
-                println(stack.toString())
+                println(objectMapper.writeValueAsString(stack))
             }
         }
     }
@@ -40,7 +43,7 @@ object CloudformationService {
         CloudFormationClient { this.region = region }.use { cfClient ->
             val stacksResponse: DescribeStacksResponse = cfClient.describeStacks(DescribeStacksRequest {stackName = name})
             stacksResponse.stacks?.forEach { stack ->
-                println(stack.toString())
+                println(objectMapper.writeValueAsString(stack))
             }
         }
     }
