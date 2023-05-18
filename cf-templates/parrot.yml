@@ -1,0 +1,13 @@
+name: "stackName"
+docker:
+  image: "httpd"
+  innerPort: "80"
+  dbEndpoint: "test-end-point"
+  dbUser: "dbUser"
+  dbPassword: "dbPassword"
+
+aws:
+  region: "eu-west-1"
+  ec2ImageId: "ami-09fd16644beea3565"
+  services:
+    - type: "ALB"
