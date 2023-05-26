@@ -1,9 +1,7 @@
 package com.swoqe.parrot.commands
 
-import com.swoqe.parrot.commands.subs.DeleteCommand
-import com.swoqe.parrot.commands.subs.DeployCommand
-import com.swoqe.parrot.commands.subs.StatusCommand
-import com.swoqe.parrot.commands.subs.ValidateCommand
+import com.swoqe.parrot.commands.subs.*
+import picocli.AutoComplete.GenerateCompletion
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import java.util.concurrent.Callable
@@ -19,7 +17,10 @@ import kotlin.system.exitProcess
         ValidateCommand::class,
         DeployCommand::class,
         DeleteCommand::class,
-        StatusCommand::class
+        StatusCommand::class,
+        OutputsCommand::class,
+        CleanCommand::class,
+        GenerateCompletion::class
     ]
 )
 class ParrotCommand : Callable<Int> {

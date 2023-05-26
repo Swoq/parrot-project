@@ -1,12 +1,15 @@
 package com.swoqe.parrot.commands.subs
 
-import com.swoqe.parrot.commands.ParrotCommand
+import aws.sdk.kotlin.runtime.InternalSdkApi
+import aws.sdk.kotlin.runtime.region.resolveRegion
+import com.swoqe.parrot.configuration.dto.ConfigurationRoot
+import com.swoqe.parrot.configuration.util.JacksonYamlMapper
+import kotlinx.coroutines.runBlocking
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Parameters
 import java.io.File
 import java.util.concurrent.Callable
-import kotlin.system.exitProcess
 
 @Command(
     name = "validate",
@@ -22,9 +25,8 @@ class ValidateCommand : Callable<Int> {
     }
 
     override fun call(): Int {
-        file.walk().forEach {
-            println(it.name)
-        }
+        val configurationRoot = JacksonYamlMapper.instance.readValue(file, ConfigurationRoot::class.java)
+        println(configurationRoot)
         return 0
     }
 }

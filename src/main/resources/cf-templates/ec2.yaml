@@ -1,9 +1,14 @@
+Parameters:
+  AmiID:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Description: The ID of the AMI.
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ${ec2_image_id} # Amazon Linux 2 AMI
+      ImageId: !Ref AmiID # Amazon Linux 2 AMI
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
       UserData:
@@ -14,7 +19,7 @@ Resources:
           sudo yum install -y docker git
           sudo service docker start
           # Pull and run Docker container
-          sudo docker run -d -p 80:${inner_port} -e DB_HOST=${db_endpoint} -e DB_USER=${db_user} -e DB_PASSWORD=${db_password} ${docker_image}
+          sudo docker run -d -p 80:${inner_port} ${envs} ${docker_image}
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -25,3 +30,4 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+

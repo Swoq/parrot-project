@@ -1,0 +1,29 @@
+
+  MyDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: MyEC2Dashboard
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "view": "timeSeries",
+                "stacked": false,
+                "metrics": [
+                  [
+                    "AWS/EC2",
+                    "CPUUtilization",
+                    "InstanceId",
+                    "${EC2Instance}"
+                  ]
+                ],
+                "region": "${AWS::Region}",
+                "title": "EC2 CPU Utilization"
+              }
+            }
+          ]
+        }

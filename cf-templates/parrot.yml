@@ -1,15 +1,22 @@
-name: "stackName"
 docker:
   image: "httpd"
   innerPort: "80"
-  dbEndpoint: "test-end-point"
-  dbUser: "dbUser"
-  dbPassword: "dbPassword"
+  environment:
+    - name: "DB_HOST"
+      value: "dbhost::"
+    - name: "name"
+      value: "DB_USER"
+    - name: "DB_PASSWORD"
+      value: "password"
 
 aws:
-  region: "eu-west-1"
-  ec2ImageId: "ami-09fd16644beea3565"
   services:
-#    - type: "AWS::ElasticLoadBalancingV2"
-    - type: "ALB"
+    - type: "AWS::EC2::VPC"
+    - type: "AWS::ElasticLoadBalancingV2"
+    - type: "AWS::AutoScaling::AutoScalingGroup"
+      properties:
+        MaxSize: "5"
+        MinSize: "2"
+        DesiredCapacity: "2"
+
 
