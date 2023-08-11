@@ -26,6 +26,9 @@ class StatusCommand : Callable<Int> {
     @Option(names = ["-a", "--all"], required = false, description = ["Print all available information about stack"])
     var allInformation: Boolean = false
 
+    @Option(names = ["-e", "--events"], required = false, description = ["Print all the events of the stack"])
+    var events: Boolean = false
+
     @OptIn(InternalSdkApi::class)
     @Option(names = ["-r", "--region"], required = false, description = ["Region to deploy stack in"])
     var region: String = runBlocking { resolveRegion() }
@@ -47,13 +50,26 @@ class StatusCommand : Callable<Int> {
                 }
 
             } else {
-                val resources = CloudformationService.describeStackResourcesByName(region, stackName)
-                System.out.printf("%-60s %s\n",  "Time : Resource Name ", ": Resource Status")
-                println("==========================================================================")
-                resources?.forEach { resource ->
-                    System.out.printf("%-60s %s\n",  "${resource.timestamp} : ${resource.logicalResourceId}", ": ${resource.resourceStatus}")
-                    if (resource.resourceStatus == ResourceStatus.CreateFailed) {
-                        println("\t Error: ${resource.resourceStatusReason?.split(";")?.joinToString("\n\t")}")
+                if (events) {
+                    val eventsInformation = CloudformationService.describeStackEventsByName(region, stackName)
+                    System.out.printf("%-60s %s\n",  "Time : Event Name ", ": Event Status")
+                    println("==========================================================================")
+                    eventsInformation?.forEach { event ->
+                        System.out.printf("%-60s %s\n",  "${event.timestamp} : ${event.logicalResourceId}", ": ${event.resourceStatus}")
+                        if (event.resourceStatus == ResourceStatus.CreateFailed) {
+                            println("\t Error: ${event.resourceStatusReason?.split(";")?.joinToString("\n\t")}")
+                        }
+                    }
+                }
+                else {
+                    val resources = CloudformationService.describeStackResourcesByName(region, stackName)
+                    System.out.printf("%-60s %s\n", "Time : Resource Name ", ": Resource Status")
+                    println("==========================================================================")
+                    resources?.forEach { resource ->
+                        System.out.printf("%-60s %s\n", "${resource.timestamp} : ${resource.logicalResourceId}", ": ${resource.resourceStatus}")
+                        if (resource.resourceStatus == ResourceStatus.CreateFailed) {
+                            println("\t Error: ${resource.resourceStatusReason?.split(";")?.joinToString("\n\t")}")
+                        }
                     }
                 }
             }

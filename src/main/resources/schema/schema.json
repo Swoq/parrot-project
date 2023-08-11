@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "docker": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "innerPort": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": ["name", "value"]
+          }
+        }
+      },
+      "required": ["image", "innerPort"]
+    },
+    "aws": {
+      "type": "object",
+      "properties": {
+        "region": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 15
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object"
+              }
+            },
+            "required": ["type"]
+          }
+        }
+      },
+      "required": ["services"]
+    }
+  },
+  "required": ["docker", "aws"]
+}

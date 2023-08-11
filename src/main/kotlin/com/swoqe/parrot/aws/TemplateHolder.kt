@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.fasterxml.jackson.databind.util.JSONWrappedObject
 import com.swoqe.parrot.aws.TemplateHolder.substituteProperties
-import com.swoqe.parrot.aws.freemarker.AlbSgVpcEntity
 import com.swoqe.parrot.aws.freemarker.Ec2DockerEntity
 import com.swoqe.parrot.configuration.util.JacksonYamlMapper
 import freemarker.cache.NullCacheStorage
@@ -61,11 +60,3 @@ object TemplateHolder {
             .replace("Fn::Select2", "!Select [1, !GetAZs '']")
     }
 }
-
-//fun main() {
-//    val string = substituteProperties(
-//        TemplateHolder.javaClass.getResource("/cf-templates/alb-sg.yaml")?.readText().toString(),
-//        mapOf()
-//    )
-//    println(string)
-//}

@@ -13,6 +13,9 @@ aws:
   services:
     - type: "AWS::EC2::VPC"
     - type: "AWS::ElasticLoadBalancingV2"
+      properties:
+        HealthCheckIntervalSeconds: "12"
+        HealthCheckTimeoutSeconds: "10"
     - type: "AWS::AutoScaling::AutoScalingGroup"
       properties:
         MaxSize: "5"

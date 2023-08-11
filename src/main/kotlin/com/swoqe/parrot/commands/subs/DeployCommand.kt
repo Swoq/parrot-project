@@ -2,15 +2,19 @@ package com.swoqe.parrot.commands.subs
 
 import aws.sdk.kotlin.runtime.InternalSdkApi
 import aws.sdk.kotlin.runtime.region.resolveRegion
+import aws.sdk.kotlin.services.cloudformation.model.StackStatus
 import aws.smithy.kotlin.runtime.retries.toResult
 import com.mifmif.common.regex.Generex
 import com.swoqe.parrot.configuration.dto.ConfigurationRoot
 import com.swoqe.parrot.configuration.service.CloudformationService
 import com.swoqe.parrot.configuration.service.ConfigurationService
+import com.swoqe.parrot.configuration.service.ValidationService
 import com.swoqe.parrot.configuration.util.JacksonYamlMapper
 import kotlinx.coroutines.runBlocking
 import picocli.CommandLine.*
 import java.io.File
+import java.net.URI
+import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 
@@ -39,6 +43,14 @@ class DeployCommand : Callable<Int> {
 
     override fun call(): Int {
         runCatching {
+            val schema = ValidationService.javaClass.getResource("/schema/schema.json")
+            val report = ValidationService.validate(file, schema?.readText() ?: "")
+
+            if (report == null || !report.isSuccess) {
+                print(report)
+                return 0
+            }
+
             val configurationRoot = JacksonYamlMapper.instance.readValue(file, ConfigurationRoot::class.java)
             configurationRoot.aws.region = configurationRoot.aws.region ?: region
             configurationRoot.name = configurationRoot.name ?: generex.random(10, 11)
@@ -51,8 +63,12 @@ class DeployCommand : Callable<Int> {
                     println("\tWaiting stack to finish deployment...")
 
                     val stacks = CloudformationService.waitUntilStackDeployed(region, configurationRoot.name)
-
-                    println("Outputs: \n${objectMapper.writeValueAsString(stacks.toResult().getOrThrow().stacks?.first()?.outputs)}")
+                    val stack = stacks.toResult().getOrThrow().stacks?.first()
+                    if (stack?.stackStatus == StackStatus.CreateComplete) {
+                        println(" === Outputs: \n${objectMapper.writeValueAsString(stack.outputs)}")
+                    } else {
+                        print(" === Check out stack events to find the reason of failure")
+                    }
                 }
             }
         }.onFailure { exception ->

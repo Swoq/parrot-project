@@ -10,7 +10,7 @@ import kotlin.system.exitProcess
 @Command(
     name = "parrot",
     mixinStandardHelpOptions = true,
-    version = ["parrot 4.0"],
+    version = ["parrot 0.0.2"],
     description = ["Simple CLI Tool which implements Infrastructure As Code (IAC) paradigm in AWS Cloud. " +
             "Accepts YAML file and deploy provided services around a Docker container."],
     subcommands = [

@@ -27,6 +27,8 @@ dependencies {
     implementation("com.github.mifmif:generex:1.0.1")
     implementation("org.slf4j:slf4j-api:2.0.7")
 
+    implementation("com.github.fge:json-schema-validator:2.2.14")
+
     implementation("org.slf4j:slf4j-simple:2.0.7")
     // aws kotlin sdk
     implementation("aws.sdk.kotlin:cloudformation-jvm:0.24.0-beta")
